@@ -13,6 +13,7 @@ public class Function
     {
         this.serviceProviderRoot = new ServiceCollection()
             .AddSingleton<IAmazonSimpleEmailService, AmazonSimpleEmailServiceClient>()
+            .AddSingleton<IEmailService, SESService>()
             .BuildServiceProvider(true);
     }
 
@@ -22,12 +23,16 @@ public class Function
     }
 
     [LambdaSerializer(typeof(DefaultLambdaJsonSerializer))]
-    public async Task<string> FunctionHandlerAsync(Stream inputStream, Amazon.Lambda.Core.ILambdaContext? context = null)
+    public async Task<Stream> FunctionHandlerAsync(Stream inputStream, Amazon.Lambda.Core.ILambdaContext? context = null)
     {
         var inputEventString = await inputStream.ReadAsStringAsync();
+        using var scope = this.serviceProviderRoot.CreateScope();
         HandlerInput input = await FunctionHelpers.DeserializeInput(inputEventString);
-        string body = input.Body;
-        return await Task.FromResult(body);
+        var emailService = scope.ServiceProvider.GetRequiredService<IEmailService>();
+        await emailService.SendEmailAsync(input.ToEmail, input.Subject, input.Body);
+
+
+        return await FunctionHelpers.SerializeResult(input);
 
     }
 }
