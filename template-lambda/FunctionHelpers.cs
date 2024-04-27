@@ -1,6 +1,6 @@
 ﻿using System.Text.Json;
 
-namespace template_lambda.Helpers;
+namespace email_lambda.Helpers;
 internal static class FunctionHelpers
 {
     internal static JsonSerializerOptions SerializerOptions = new JsonSerializerOptions
