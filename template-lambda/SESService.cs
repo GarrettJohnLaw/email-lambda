@@ -1,4 +1,4 @@
-﻿namespace template_lambda;
+﻿namespace email_lambda;
 using Amazon.SimpleEmail;
 using Amazon.SimpleEmail.Model;
 

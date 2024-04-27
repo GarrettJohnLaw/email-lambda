@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace template_lambda;
+namespace email_lambda;
 
 public static class StreamExtensions
 {

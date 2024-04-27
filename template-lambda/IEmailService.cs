@@ -1,4 +1,4 @@
-﻿namespace template_lambda;
+﻿namespace email_lambda;
 
 public interface IEmailService {
     Task SendEmailAsync(string toAddress, string subject, string body);
