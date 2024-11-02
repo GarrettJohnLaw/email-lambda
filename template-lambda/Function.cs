@@ -3,6 +3,7 @@ using Amazon.Lambda.Serialization.SystemTextJson;
 using Amazon.SimpleEmail;
 using Microsoft.Extensions.DependencyInjection;
 using email_lambda.Helpers;
+using template_lambda;
 
 namespace email_lambda;
 public class Function
@@ -14,6 +15,7 @@ public class Function
         this.serviceProviderRoot = new ServiceCollection()
             .AddSingleton<IAmazonSimpleEmailService, AmazonSimpleEmailServiceClient>()
             .AddSingleton<IEmailService, SESService>()
+            .AddSingleton<NotionClient>()
             .BuildServiceProvider(true);
     }
 
@@ -29,7 +31,7 @@ public class Function
         using var scope = this.serviceProviderRoot.CreateScope();
         HandlerInput input = await FunctionHelpers.DeserializeInput(inputEventString);
         var emailService = scope.ServiceProvider.GetRequiredService<IEmailService>();
-        await emailService.SendEmailAsync(input.ToEmail, input.Subject, input.Body);
+        await emailService.SendEmailAsync(input.Recipients, input.Subject, input.Body);
 
 
         return await FunctionHelpers.SerializeResult(input);

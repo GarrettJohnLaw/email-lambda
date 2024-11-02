@@ -1,5 +1,5 @@
 ﻿namespace email_lambda;
 
 public interface IEmailService {
-    Task SendEmailAsync(string toAddress, string subject, string body);
+    Task SendEmailAsync(List<string> recipients, string subject, string body);
 }
